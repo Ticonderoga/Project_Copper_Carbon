@@ -36,11 +36,11 @@ def contour_Ther(T) :
 if __name__ == '__main__' :
 
     # Importation du fichier Excel
-    mat_Th = pd.read_excel('TP_Outils_Maths.ods',sheet_name='Thermal',
+    mat_Th = pd.read_excel('TP_Outils_Maths.xlsx',sheet_name='Thermal',
                            usecols=np.arange(1,90))
     mat_Th.fillna(0,inplace=True)
     
-    rhs_Th = pd.read_excel('TP_Outils_Maths.ods',sheet_name='Thermal',
+    rhs_Th = pd.read_excel('TP_Outils_Maths.xlsx',sheet_name='Thermal',
                            usecols=[91])
     
     
