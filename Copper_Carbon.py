@@ -56,6 +56,17 @@ if __name__ == '__main__' :
     rhs_El = pd.read_excel('TP_Outils_Maths.xlsx',sheet_name='Electrical',
                            usecols=[91])
     
+    M_grad_Vx = pd.read_excel('TP_Outils_Maths.xlsx',sheet_name='Grad_Vx',
+                           usecols=np.arange(1,90))
+    M_grad_Vx.fillna(0,inplace=True)
+    MgVx = M_grad_Vx.to_numpy(dtype=float)
+    
+    
+    M_grad_Vy = pd.read_excel('TP_Outils_Maths.xlsx',sheet_name='Grad_Vy',
+                           usecols=np.arange(1,90))
+    M_grad_Vy.fillna(0,inplace=True)
+    MgVy = M_grad_Vy.to_numpy(dtype=float)
+    
     
     # Constants
     dx= 2e-3            # spatial step
@@ -70,8 +81,9 @@ if __name__ == '__main__' :
     d = 5e-3            # depth 
     I = 10              # current
     j = I / (5.5*dx*d)  # current density
+    rho_El = 300e-8
     
-    IB = -2 * rho * j *dx
+    IB = -2 * rho_El * j *dx
     rhs_El.replace(to_replace='IB',value=IB,inplace=True)
     rhsEl = rhs_El.to_numpy(dtype=float).flatten()
 
@@ -89,7 +101,7 @@ if __name__ == '__main__' :
     
     # Sources électriques
     # Effet Joule en W.m-3
-    QJ = 1e-3
+    QJ = 8000
     # QJ = 0
     # Source au contact W.m-2
     qc = 10e-3/ 1e-4 # 10 mOhm / cm2
@@ -163,6 +175,9 @@ if __name__ == '__main__' :
             print('time : ',t)
         T = LU_T.solve(T+rhsT)
         V = LU_E.solve(rhsEl)
+        gVx = MgVx @ V / dx
+        gVy = MgVy @ V / dx
+        QJ = (gVx**2+gVy**2)/rho_El
         
     # T = LU_T.solve(T+rhsT)
     plt.figure(1)
@@ -170,9 +185,9 @@ if __name__ == '__main__' :
     plt.figure(2)
     contour(V,'Elec')
     
+    plt.figure(3)
     
-    
-    
+    contour(QJ,'Elec')
     
     
     
