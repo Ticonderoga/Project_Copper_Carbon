@@ -12,23 +12,29 @@ import pandas as pd
 import scipy.sparse as scsp
 plt.close('all')
 
-def contour_Ther(T) :
-    newT=np.r_[T[:77],np.nan,T[77:83],np.nan,T[83:]]
-    mask = np.zeros_like(newT, dtype=bool)
+def contour(F,field) :
+    newF=np.r_[F[:77],np.nan,F[77:83],np.nan,F[83:]]
+    mask = np.zeros_like(newF, dtype=bool)
     mask[77] = True
     mask[84] = True
-    newT = newT.reshape((13,7))
+    newF = newF.reshape((13,7))
     mask = mask.reshape((13,7))
-    newT = np.flipud(np.ma.array(newT, mask=mask))
+    newF = np.flipud(np.ma.array(newF, mask=mask))
     x = np.linspace(0,12,7)
     y = np.linspace(0,24,13)
     
-    plt.contourf(x,y,newT-273.15, 100, corner_mask=False)
-    plt.colorbar()
-    
-    plt.contour(x,y,newT-273.15, 10, colors='k',corner_mask=False)
-    
-    plt.title('Champ de température [°C]')
+    if field == 'Ther' :    
+        plt.contourf(x,y,newF-273.15, 100, corner_mask=False)
+        plt.colorbar()
+        plt.contour(x,y,newF-273.15, 10, colors='k',corner_mask=False)
+        plt.title('Temperature [°C]')
+
+    elif field == "Elec" :
+        plt.contourf(x,y,newF, 100, corner_mask=False)
+        plt.colorbar()
+        plt.contour(x,y,newF, 10, colors='k',corner_mask=False)
+        plt.title('Potential [V]')
+
     plt.xlabel('x [mm]')
     plt.ylabel('y [mm]')
     plt.axis('tight')
@@ -160,9 +166,9 @@ if __name__ == '__main__' :
         
     # T = LU_T.solve(T+rhsT)
     plt.figure(1)
-    contour_Ther(T)
+    contour(T,'Ther')
     plt.figure(2)
-    contour_Ther(V)
+    contour(V,'Elec')
     
     
     
