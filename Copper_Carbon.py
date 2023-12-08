@@ -159,7 +159,10 @@ if __name__ == '__main__' :
         V = LU_E.solve(rhsEl)
         
     # T = LU_T.solve(T+rhsT)
+    plt.figure(1)
     contour_Ther(T)
+    plt.figure(2)
+    contour_Ther(V)
     
     
     
