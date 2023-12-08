@@ -35,7 +35,7 @@ def contour_Ther(T) :
 
 if __name__ == '__main__' :
 
-    # Importation du fichier Excel
+    # Excel imports
     mat_Th = pd.read_excel('TP_Outils_Maths.xlsx',sheet_name='Thermal',
                            usecols=np.arange(1,90))
     mat_Th.fillna(0,inplace=True)
@@ -43,17 +43,33 @@ if __name__ == '__main__' :
     rhs_Th = pd.read_excel('TP_Outils_Maths.xlsx',sheet_name='Thermal',
                            usecols=[91])
     
+    mat_El = pd.read_excel('TP_Outils_Maths.xlsx',sheet_name='Electrical',
+                           usecols=np.arange(1,90))
+    mat_El.fillna(0,inplace=True)
     
-    # Constantes
-    dx= 2e-3
-    k = 15
-    rho = 2200
-    Cp = 712
-    tf = 30*60
-    h = 20
-    Tinf = 293.15
-    Tinit = 293.15 # Température initiale
+    rhs_El = pd.read_excel('TP_Outils_Maths.xlsx',sheet_name='Electrical',
+                           usecols=[91])
     
+    
+    # Constants
+    dx= 2e-3            # spatial step
+    k = 15              # thermal conductivity
+    rho = 2200          # density
+    Cp = 712            # heat capacity
+    tf = 30*60          # final time
+    h = 20              # heat transfer coefficient
+    Tinf = 293.15       # ambient temperature
+    Tinit = 293.15      # Initial temperature
+    
+    d = 5e-3            # depth 
+    I = 10              # current
+    j = I / (5.5*dx*d)  # current density
+    
+    IB = -2 * rho * j *dx
+    rhs_El.replace(to_replace='IB',value=IB,inplace=True)
+    rhsEl = rhs_El.to_numpy(dtype=float).flatten()
+
+    # Initial vector of temperature
     T = Tinit * np.ones((89,))
     
     n = 12000 # Nbre de points en temps
