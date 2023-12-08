@@ -113,11 +113,18 @@ if __name__ == '__main__' :
     mat_Th.replace(to_replace='M23FO',value=-2/3*Fo,inplace=True)
     mat_Th.replace(to_replace='1P4FOP43BIFO',value=1+4*Fo+4/3*Bi*Fo,inplace=True)
     
-    # On transforme en Numpy puis en matrice creuse
+    # Transform into Numpy array and sparse matrix
+    # Thermal
     MT=mat_Th.to_numpy(dtype=float)
     MT_sparse = scsp.csc_matrix(MT)
-    # On effectue la décomposition LU
+    # LU decomposition
     LU_T = scsp.linalg.splu(MT_sparse)
+    
+    # Electrical
+    ME=mat_El.to_numpy(dtype=float)
+    ME_sparse = scsp.csc_matrix(ME)
+    # LU decomposition
+    LU_E = scsp.linalg.splu(ME_sparse)
     
     # Constante dans le 2nd membre
     JE = QJ*dt/rho/Cp
@@ -149,6 +156,8 @@ if __name__ == '__main__' :
         if np.isclose(t%savet,0):
             print('time : ',t)
         T = LU_T.solve(T+rhsT)
+        V = LU_E.solve(rhsEl)
+        
     # T = LU_T.solve(T+rhsT)
     contour_Ther(T)
     
