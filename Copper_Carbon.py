@@ -34,6 +34,11 @@ def contour(F,field) :
         plt.colorbar()
         plt.contour(x,y,newF, 10, colors='k',corner_mask=False)
         plt.title('Potential [V]')
+    else :
+        plt.contourf(x,y,newF, 100, corner_mask=False)
+        plt.colorbar()
+        plt.contour(x,y,newF, 10, colors='k',corner_mask=False)
+        plt.title(field)
 
     plt.xlabel('x [mm]')
     plt.ylabel('y [mm]')
@@ -73,7 +78,7 @@ if __name__ == '__main__' :
     k = 15              # thermal conductivity
     rho = 2200          # density
     Cp = 712            # heat capacity
-    tf = 30*60          # final time
+    tf = 10*60          # final time
     h = 20              # heat transfer coefficient
     Tinf = 293.15       # ambient temperature
     Tinit = 293.15      # Initial temperature
@@ -101,7 +106,7 @@ if __name__ == '__main__' :
     
     # Sources électriques
     # Effet Joule en W.m-3
-    QJ = 8000
+    QJ = 5.2e4
     # QJ = 0
     # Source au contact W.m-2
     qc = 10e-3/ 1e-4 # 10 mOhm / cm2
@@ -187,7 +192,7 @@ if __name__ == '__main__' :
     
     plt.figure(3)
     
-    contour(QJ,'Elec')
+    contour(QJ,'Heat sources [W.m-3]')
     
     
     
