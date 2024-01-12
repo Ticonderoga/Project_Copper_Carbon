@@ -206,19 +206,16 @@ if __name__ == '__main__' :
             
         
         
-    # T = LU_T.solve(T+rhsT)
+    # contour at a specific time
+    idx_t_watch = 8 # about 2 minutes because 8 x 15 = 120 s 
     plt.figure(1)
-    contour(T,'Ther')
+    contour(save_T[:,idx_t_watch],'Ther')
     plt.figure(2)
-    contour(V,'Elec')
+    contour(save_V[:,idx_t_watch],'Elec')
     
-    plt.figure(3)
-    
-    contour(QJ,'Heat sources [W.m-3]')
-    
-    plt.figure(4)
-    
-    node_number = 81 
+    # T profile at specific node 
+    plt.figure(3)    
+    node_number = 81
     plt.plot(save_time,save_T[node_number,:])
     plt.xlabel('time [s]')
     plt.ylabel('temperature [°C]') 
