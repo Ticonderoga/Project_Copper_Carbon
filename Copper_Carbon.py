@@ -182,7 +182,7 @@ if __name__ == '__main__' :
     
     save_T[:,0] = T
     save_V[:,0] = 0
-    i = 1
+    i=0
     # On efftectue la boucle temporelle
     for t in time :
         # Electrical Simulation
@@ -194,10 +194,11 @@ if __name__ == '__main__' :
         rhsT = rhsT_init + QJ*dt/rho/Cp
         
         T = LU_T.solve(T+rhsT)
-        if np.isclose(t%savet,0):
+        if np.isclose(t%savet,0) :
             print('time : ',t)
-            save_T[:,i] = T
-            save_V[:,i] = V
+            if i!=0 :
+                save_T[:,i] = T
+                save_V[:,i] = V
             i = i+1
             
             
