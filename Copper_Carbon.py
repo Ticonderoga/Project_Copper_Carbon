@@ -99,6 +99,12 @@ if __name__ == '__main__' :
     time, dt  = np.linspace(0,tf,n+1,retstep=True)
     savet = 15 # interval de temps pour les sauvegardes [s]
     print('Time step [s] : ',dt)
+    nb_save = tf // savet +1
+    n = mat_Th.shape[0]  # 89 points from 0 to 88
+    
+    save_T = np.zeros((n,nb_save))
+    save_V = np.zeros_like(save_T)
+
     
     # Nbre de Fourier et Biot
     Fo = k/rho/Cp*dt/dx**2
@@ -174,10 +180,11 @@ if __name__ == '__main__' :
     # on transforme rhs en Numpy
     rhsT_init = rhs_Th.to_numpy(dtype=float).flatten()
     
+    save_T[:,0] = T
+    save_V[:,0] = 0
+    i = 1
     # On efftectue la boucle temporelle
     for t in time :
-        if np.isclose(t%savet,0):
-            print('time : ',t)
         # Electrical Simulation
         V = LU_E.solve(rhsEl)
         gVx = MgVx @ V / dx
@@ -187,6 +194,13 @@ if __name__ == '__main__' :
         rhsT = rhsT_init + QJ*dt/rho/Cp
         
         T = LU_T.solve(T+rhsT)
+        if np.isclose(t%savet,0):
+            print('time : ',t)
+            save_T[:,i] = T
+            save_V[:,i] = V
+            i = i+1
+            
+            
         
         
     # T = LU_T.solve(T+rhsT)
