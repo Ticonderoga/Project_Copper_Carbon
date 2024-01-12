@@ -104,6 +104,7 @@ if __name__ == '__main__' :
     
     save_T = np.zeros((n,nb_save))
     save_V = np.zeros_like(save_T)
+    save_time = np.zeros(nb_save)
 
     
     # Nbre de Fourier et Biot
@@ -197,6 +198,7 @@ if __name__ == '__main__' :
         if np.isclose(t%savet,0) :
             print('time : ',t)
             if i!=0 :
+                save_time[i] = t 
                 save_T[:,i] = T
                 save_V[:,i] = V
             i = i+1
@@ -213,6 +215,14 @@ if __name__ == '__main__' :
     plt.figure(3)
     
     contour(QJ,'Heat sources [W.m-3]')
+    
+    plt.figure(4)
+    
+    node_number = 81 
+    plt.plot(save_time,save_T[node_number,:])
+    plt.xlabel('time [s]')
+    plt.ylabel('temperature [°C]') 
+    plt.title ('T profile at node :'+str(node_number))
     
     
     
