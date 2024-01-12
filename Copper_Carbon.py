@@ -106,7 +106,7 @@ if __name__ == '__main__' :
     
     # Sources électriques
     # Effet Joule en W.m-3
-    QJ = 5.2e4
+    QJ = 0
     # QJ = 0
     # Source au contact W.m-2
     qc = 10e-3/ 1e-4 # 10 mOhm / cm2
@@ -172,17 +172,22 @@ if __name__ == '__main__' :
     rhs_Th.replace(to_replace='BC71',value=BC71,inplace=True)
     
     # on transforme rhs en Numpy
-    rhsT = rhs_Th.to_numpy(dtype=float).flatten()
+    rhsT_init = rhs_Th.to_numpy(dtype=float).flatten()
     
     # On efftectue la boucle temporelle
     for t in time :
         if np.isclose(t%savet,0):
             print('time : ',t)
-        T = LU_T.solve(T+rhsT)
+        # Electrical Simulation
         V = LU_E.solve(rhsEl)
         gVx = MgVx @ V / dx
         gVy = MgVy @ V / dx
         QJ = (gVx**2+gVy**2)/rho_El
+        
+        rhsT = rhsT_init + QJ*dt/rho/Cp
+        
+        T = LU_T.solve(T+rhsT)
+        
         
     # T = LU_T.solve(T+rhsT)
     plt.figure(1)
