@@ -88,7 +88,7 @@ if __name__ == '__main__' :
     
     d = 5e-3            # depth
     t_I =     [0, tf/4, tf/4, tf/2, tf] # time for current profile
-    I_val =   [1,    1,   50,   10, 2]  # current
+    I_val =   [1,    1,   50,   50, 2]  # current
     I = scint.interp1d(t_I, I_val)      # I is a function of t
     rho_El = 300e-8
     
@@ -179,6 +179,8 @@ if __name__ == '__main__' :
         j = I(t) / (5.5*dx*d)  # current density at the contact
         IB = -2 * rho_El * j *dx
         rhsEl[ind_IB] = IB 
+        
+        jtop = I(t) / (12.5*dx*d)
 
         V = LU_E.solve(rhsEl)
         gVx = MgVx @ V / dx
@@ -188,13 +190,13 @@ if __name__ == '__main__' :
         # rhs Thermal
         rhsT = rhsT_init + QJ*dt/rho/Cp
         
-        rhsT[ind_QO] = rhsT[ind_QO] + 4*Re_top*j**2*(dx*d)**2 * dt/rho/Cp/dx
-        rhsT[ind_QT] = rhsT[ind_QT] + 2*Re_top*j**2*(dx*d)**2 * dt/rho/Cp/dx
+        rhsT[ind_QO] = rhsT[ind_QO] + 4*Re_top*jtop**2*(dx*d)**2 * dt/rho/Cp/dx
+        rhsT[ind_QT] = rhsT[ind_QT] + 2*Re_top*jtop**2*(dx*d)**2 * dt/rho/Cp/dx
         rhsT[ind_CVJE] = rhsT[ind_CVJE] + 2*Bi*Fo*Tinf
         
         rhsT[ind_QB] = rhsT[ind_QB] + 2*Re_c*j**2*(dx*d)**2 * dt/rho/Cp/dx
         rhsT[ind_CVBL] = rhsT[ind_CVBL] + 2*Re_c*j**2*(dx*d)**2 * dt/rho/Cp/dx + 2*Bi*Fo*Tinf
-        rhsT[ind_BC42] = rhsT[ind_BC42] + Re_top*j**2*(dx*d)**2* dt/rho/Cp/dx+Fo*Bi*Tinf
+        rhsT[ind_BC42] = rhsT[ind_BC42] + Re_top*jtop**2*(dx*d)**2* dt/rho/Cp/dx+Fo*Bi*Tinf
         rhsT[ind_BC70] = rhsT[ind_BC70] + 4*Bi*Fo*Tinf
         rhsT[ind_BC71] = rhsT[ind_BC71] + 4/3*Bi*Fo*Tinf
         
